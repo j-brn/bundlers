@@ -31,11 +31,11 @@
   getPname = pkg:
     if lib.hasAttr "pname" pkg
     then pkg.pname
-    else lib.getName pkg.name;
+    else lib.getName pkg;
   getVersion = pkg: ''${
       if lib.hasAttr "version" pkg
       then pkg.version
-      else lib.getVersion pkg.name
+      else lib.getVersion pkg
     }.$(echo ${pkg} | cut -d'/' -f 4 | cut -c -7)'';
 in {
   multi = pkg:
@@ -45,7 +45,7 @@ in {
    - Symlinks in /usr/bin and /usr/share to the input package in the store
    */
     pkgs.stdenv.mkDerivation {
-      name = "${target}-multi-${pkg.name}";
+      name = "${target}-multi-${getPname pkg}";
       dontUnpack = true;
       inherit buildInputs installPhase;
       buildPhase = ''
@@ -91,7 +91,7 @@ in {
    - Symlinks in /usr/bin and /usr/share to the input package in the store
    */
     pkgs.stdenv.mkDerivation {
-      name = "${target}-single-full-${pkg.name}";
+      name = "${target}-single-full-${getPname pkg}";
       inherit buildInputs installPhase;
       dontUnpack = true;
       buildPhase = ''
